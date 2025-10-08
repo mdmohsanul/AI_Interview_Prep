@@ -12,7 +12,7 @@ const ResultPage = () => {
   const { apiResponse, setApiResponse } = useResultContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<any>(null);
+  const [formData, setFormData] = useState(null);
 
   // ✅ load sessionStorage data safely on client
   useEffect(() => {
