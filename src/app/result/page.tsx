@@ -64,11 +64,12 @@ const ResultPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto my-10 flex flex-col gap-6">
-      <Link href="/" className="text-blue-500 underline self-start">
+      <Link href="/" className="text-blue-500 underline self-start mx-7">
         Home
       </Link>
-
-      <InterviewQuestionCard questionData={apiResponse} />
+      <div className="mx-6">
+        <InterviewQuestionCard questionData={apiResponse} />
+      </div>
 
       {error && <p className="text-red-600 text-center">{error}</p>}
 

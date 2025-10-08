@@ -7,7 +7,7 @@ export default function Home() {
         <h1 className="text-center  text-3xl font-semibold text-gray-700 md:text-5xl py-5">
           Job Interview Coach
         </h1>
-        <div className="max-w-6xl mx-auto mt-8">
+        <div className="max-w-6xl mx-auto mt-8 ">
           <DetailsForm />
         </div>
       </div>

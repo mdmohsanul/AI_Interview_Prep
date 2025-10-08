@@ -89,8 +89,8 @@ export function DetailsForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5  ">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 mx-5  ">
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-x-6 gap-y-5">
           {/* 🧩 Job Role */}
           <FormField
             control={form.control}
