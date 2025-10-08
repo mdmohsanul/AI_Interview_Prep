@@ -1,8 +1,8 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import {
   Select,
   SelectContent,
@@ -11,8 +11,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,26 +20,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { companyTypes, interviewRoundTypes } from "@/data/formData"
-import { TechnicalKeywordsField } from "./TechnicalKeywordsFrom"
-import { candidateProfileSchema } from "@/schema/candidateProfileSchema"
-import { Textarea } from "./ui/textarea"
-
-
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { companyTypes, interviewRoundTypes } from "@/data/formData";
+import { TechnicalKeywordsField } from "./TechnicalKeywordsFrom";
+import { candidateProfileSchema } from "@/schema/candidateProfileSchema";
+import axios from "axios";
 
 export function DetailsForm() {
-  const form = useForm<z.infer<typeof candidateProfileSchema>>({
+  const form = useForm({
     resolver: zodResolver(candidateProfileSchema),
-   
+    defaultValues: {
+      job_role: "",
+      yearsOfExperience: 0,
+      technicalKeywords: [],
+      companyType: "",
+      interviewRound: "",
+      focusArea: "",
+    },
+    mode: "onBlur", // ✅ Optional, better UX for validation
   });
-const onSubmit = async (data : z.infer<typeof candidateProfileSchema>) => {
-    console.log(data)
-}
+
+  const onSubmit = async (data: z.infer<typeof candidateProfileSchema>) => {
+    console.log(data);
+    try {
+      const res = await axios.post("/api/candidate-details", data);
+      console.log(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 max-w-xl mx-auto"
+      >
+        {/* 🧩 Job Role */}
         <FormField
           control={form.control}
           name="job_role"
@@ -53,6 +72,8 @@ const onSubmit = async (data : z.infer<typeof candidateProfileSchema>) => {
             </FormItem>
           )}
         />
+
+        {/* 🧩 Experience */}
         <FormField
           control={form.control}
           name="yearsOfExperience"
@@ -60,16 +81,21 @@ const onSubmit = async (data : z.infer<typeof candidateProfileSchema>) => {
             <FormItem>
               <FormLabel>Experience</FormLabel>
               <FormControl>
-                <Input placeholder="0"  {...field} />
+                <Input
+                  type="number"
+                  placeholder="0"
+                  onChange={(e) => field.onChange(Number(e.target.value))} // ✅ safely convert string → number
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        
-        <TechnicalKeywordsField form={form}/>
+        {/* 🧩 Technical Keywords */}
+        <TechnicalKeywordsField form={form} />
 
+        {/* 🧩 Company Type */}
         <FormField
           control={form.control}
           name="companyType"
@@ -77,24 +103,28 @@ const onSubmit = async (data : z.infer<typeof candidateProfileSchema>) => {
             <FormItem>
               <FormLabel>Company Type</FormLabel>
               <FormControl>
-               <Select onValueChange={field.onChange}  
-          value={field.value} >
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Type" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Company Type</SelectLabel>
-          {companyTypes.map((type,idx) =>  <SelectItem key={idx} value={type}>{type}</SelectItem>)}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select company type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Company Type</SelectLabel>
+                      {companyTypes.map((type, idx) => (
+                        <SelectItem key={idx} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* 🧩 Interview Round */}
         <FormField
           control={form.control}
           name="interviewRound"
@@ -102,42 +132,51 @@ const onSubmit = async (data : z.infer<typeof candidateProfileSchema>) => {
             <FormItem>
               <FormLabel>Interview Round</FormLabel>
               <FormControl>
-              <Select onValueChange={field.onChange}  
-          value={field.value} >
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Rounds" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Interview Round</SelectLabel>
-          {interviewRoundTypes.map((type,idx) =>  <SelectItem key={idx} value={type}>{type}</SelectItem>)}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select interview round" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Interview Round</SelectLabel>
+                      {interviewRoundTypes.map((type, idx) => (
+                        <SelectItem key={idx} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-<FormField
+        {/* 🧩 Focus Area */}
+        <FormField
           control={form.control}
           name="focusArea"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Focus Area</FormLabel>
               <FormControl>
-               <Textarea placeholder="Type your skills with comma separated." id="message" {...field}/>
+                <Textarea
+                  placeholder="Enter skills separated by commas, e.g. React, Node, MongoDB"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-       
-        <Button type="submit">Submit</Button>
+
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
       </form>
     </Form>
-  )
+  );
 }
 
 export default DetailsForm;
