@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Command,
   CommandGroup,
@@ -58,7 +58,25 @@ type MultiSelectProps = {
 
 function MultiSelect({ options, selected, onChange }: MultiSelectProps) {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
 
+    // Add event listener when mounted
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup on unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const toggleOption = (option: string) => {
     if (selected.includes(option)) {
       onChange(selected.filter((item) => item !== option));
@@ -86,6 +104,7 @@ function MultiSelect({ options, selected, onChange }: MultiSelectProps) {
         <CommandInput
           placeholder="Search keywords..."
           onClick={() => setOpen(!open)}
+          ref={dropdownRef}
         />
         {open && (
           <CommandList>
