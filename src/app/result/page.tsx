@@ -5,18 +5,23 @@ import { InterviewQuestionCard } from "@/components/InterviewQuestionCard";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 const ResultPage = () => {
   const { apiResponse, setApiResponse } = useResultContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<any>(null);
 
-  const data = sessionStorage.getItem("formData");
+  // ✅ load sessionStorage data safely on client
+  useEffect(() => {
+    const data = sessionStorage.getItem("formData");
+    if (data) setFormData(JSON.parse(data));
+  }, []);
 
   const nextQuestionHandler = async () => {
-    if (!data) {
+    if (!formData) {
       setError("No form data found. Please submit the form first.");
       return;
     }
@@ -25,8 +30,7 @@ const ResultPage = () => {
     setError(null);
 
     try {
-      const parsedData = JSON.parse(data); // ensure it's an object
-      const res = await axios.post("/api/candidate-details", parsedData);
+      const res = await axios.post("/api/candidate-details", formData);
 
       if (res.status === 201 || res.data.success) {
         console.log("API response:", res.data);
@@ -51,14 +55,19 @@ const ResultPage = () => {
   if (!apiResponse)
     return (
       <p className="text-center mt-10">
-        No result available. <Link href="/" className="text-blue-500 underline">Home</Link>
+        No result available.{" "}
+        <Link href="/" className="text-blue-500 underline">
+          Home
+        </Link>
       </p>
     );
 
   return (
     <div className="max-w-4xl mx-auto my-10 flex flex-col gap-6">
-      <Link href="/" className="text-blue-500 underline self-start">Home</Link>
-      
+      <Link href="/" className="text-blue-500 underline self-start">
+        Home
+      </Link>
+
       <InterviewQuestionCard questionData={apiResponse} />
 
       {error && <p className="text-red-600 text-center">{error}</p>}
@@ -66,11 +75,15 @@ const ResultPage = () => {
       <Button
         className="w-2/5 mx-auto"
         onClick={nextQuestionHandler}
-        disabled={loading} // disable while fetching
+        disabled={loading || !formData} // disable if loading or no data
       >
-        {loading ? <>
-                <Loader2 className="animate-spin" /> Fetching...
-              </>  : "Next Question"}
+        {loading ? (
+          <>
+            <Loader2 className="animate-spin mr-2" /> Fetching...
+          </>
+        ) : (
+          "Next Question"
+        )}
       </Button>
     </div>
   );
