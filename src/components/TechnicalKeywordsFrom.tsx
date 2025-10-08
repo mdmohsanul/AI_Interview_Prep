@@ -1,17 +1,22 @@
-import { useState } from "react"
+"use client";
 
+import { useState } from "react";
 import {
   Command,
   CommandGroup,
   CommandItem,
   CommandInput,
   CommandList,
-} from "@/components/ui/command"
-import { Badge } from "@/components/ui/badge"
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { technicalKeywords } from "@/data/formData"
-
-
+} from "@/components/ui/command";
+import { Badge } from "@/components/ui/badge";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { technicalKeywords } from "@/data/formData";
 
 export function TechnicalKeywordsField({ form }) {
   return (
@@ -32,24 +37,25 @@ export function TechnicalKeywordsField({ form }) {
         </FormItem>
       )}
     />
-  )
+  );
 }
+
 type MultiSelectProps = {
   options: string[];
   selected: string[];
   onChange: (selected: string[]) => void;
 };
 
-function MultiSelect({ options, selected, onChange }:MultiSelectProps) {
-const [open, setOpen] = useState(false)
+function MultiSelect({ options, selected, onChange }: MultiSelectProps) {
+  const [open, setOpen] = useState(false);
 
-  const toggleOption = (option:string) => {
+  const toggleOption = (option: string) => {
     if (selected.includes(option)) {
-      onChange(selected.filter((item) => item !== option))
+      onChange(selected.filter((item) => item !== option));
     } else {
-      onChange([...selected, option])
+      onChange([...selected, option]);
     }
-  }
+  };
 
   return (
     <div className="border rounded-lg p-2">
@@ -67,21 +73,26 @@ const [open, setOpen] = useState(false)
       </div>
 
       <Command>
-        <CommandInput placeholder="Search keywords..." onClick={() => setOpen(!open)}/>
-       {open  && <CommandList>
-          <CommandGroup>
-            {options.map((option) => (
-              <CommandItem
-                key={option}
-                onSelect={() => toggleOption(option)}
-                className={selected.includes(option) ? "bg-muted" : ""}
-              >
-                {option}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>} 
+        <CommandInput
+          placeholder="Search keywords..."
+          onClick={() => setOpen(!open)}
+        />
+        {open && (
+          <CommandList>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={option}
+                  onSelect={() => toggleOption(option)}
+                  className={selected.includes(option) ? "bg-muted" : ""}
+                >
+                  {option}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        )}
       </Command>
     </div>
-  )
+  );
 }
