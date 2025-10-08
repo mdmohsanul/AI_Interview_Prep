@@ -183,7 +183,11 @@ export function DetailsForm() {
             )}
           />
           {/* 🧩 Technical Keywords */}
-          <TechnicalKeywordsField form={form} />
+          <TechnicalKeywordsField
+            control={form.control}
+            name="technicalKeywords"
+          />
+
           {/* 🧩 Focus Area */}
           <FormField
             control={form.control}

@@ -17,12 +17,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { technicalKeywords } from "@/data/formData";
+import { Control, FieldValues, Path } from "react-hook-form";
 
-export function TechnicalKeywordsField({ form }) {
+// Make the component generic over the form schema T
+interface TechnicalKeywordsFieldProps<T extends FieldValues> {
+  control: Control<T>;
+  name: Path<T>; // the field name
+}
+
+export function TechnicalKeywordsField<T extends FieldValues>({
+  control,
+  name,
+}: TechnicalKeywordsFieldProps<T>) {
   return (
     <FormField
-      control={form.control}
-      name="technicalKeywords"
+      control={control}
+      name={name}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Technical Keywords</FormLabel>
